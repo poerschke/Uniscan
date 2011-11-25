@@ -1,0 +1,132 @@
+uniscan v5.1 date 01/11/2011
+
+- Added Google search
+- Added Bing search
+- Bug fix in function get_file()
+
+
+Uniscan v5.0 date: 05/10/2011
+
+- Redesigned the scanner architecture to support plugins system.
+- Bug fix in crawler.
+- Added Plugin to identify upload forms.
+- Added Plugin to source code disclosure.
+- Added Plugin to identify external hosts.
+- Added a small module to stress test.
+
+ 
+
+Uniscan v4.3 date: 09/09/2011
+
+- Added URL encode option in configuration file for all tests.
+- Bug fix in crawler.
+
+
+
+Uniscan v4.2 date: 01/09/2011
+
+- Added Basic access authentication.
+- Added Cookie based authentication.
+- Added Check for new version.
+- Added other Regex in crawler to detect links without quotes(<a href=page.html>).
+- Bug fix in crawler.
+- Improved Blind SQL-injection detection.
+- Improve system threads to be faster.
+
+
+
+Uniscan v4.1 date: 23/08/2011
+
+- Bug fix in crawler.
+
+
+
+Uniscan v4.0 date: 22/08/2011
+
+- Uniscan is now Modularized.
+- Added directory checks.
+- Added file checks.
+- Added PUT method enabled check.
+- Bug fix in crawler when found ../ directory.
+- Crawler support POST method.
+- Configuration by file uniscan.conf.
+- Added checks for backup of files found by crawler.
+- Added Blind SQL-i checks.
+- Added static RCE, RFI, LFI checks.
+- Crawler improved by checking /robots.txt.
+- improved XSS vulnerability detection.
+- improved SQL-i vulnerability detection.
+
+
+
+Uniscan v3.2 date: 03/08/2011
+
+- bug fix in function add_form().
+- More detailed log file.
+
+
+
+Uniscan v3.1 date: 02/08/2011
+
+- bug fix in XSS detection by GET method.
+
+
+
+Uniscan v3.0 date: 01/08/2011
+
+- Secure Socket Layer(SSL) support.
+- Identification of LFI and RFI vulnerabilities in Windows environments.
+- Option to use proxy.
+- Configuration via parameters
+	-h help
+	-u <url> example: https://www.example.com/
+	-f <file> with list of url's
+	-T <Maximun threads> default: 15
+	-v <Maximun variation> number of a page, default: 2
+	-t <timeout> of a connection in seconds, default: 10
+	-r <Maximun requests> of the crawler, default: 15000
+	-s <Maximun size> of one request in bytes, default: 1048576 [1MB]
+	-o <output file> default: Vuls.txt
+	-b Uniscan go to background
+	-p <proxy host> example: www.example.com
+	-l <proxy port> example: 8080
+
+
+
+Uniscan v2.1 date: 21/07/2011
+
+- Added two new tests for Remote Command Execution(RCE) Vulnerability.
+- File c.txt is now hosted on the project site
+
+
+
+Uniscan v2.0 date: 12/07/2011
+
+- Added test for SQL Injection vulnerabilities (SQL-i).
+- Added tests for vulnerabilities to Cross-Site Scripting (XSS).
+- Added new extensions to be ignored by the crawler.
+- Amendment in the detection system vulnerabilities.
+- Changes in the function mix () to generate the tests.
+- Added two new regular expressions to identify links.
+
+
+
+Uniscan v1.2 date: 21/06/2011
+
+- Bugfix in the use of threads in the crawler.
+- Fixed bug in identifying the of crawler pages.
+- Bugfix in function add_form ().
+- Fixed bug in identifying urls.
+
+
+
+Uniscan v1.1 date: 20/06/2011
+
+- Implementation of threads in the crawler.
+- Fixing bugs in the use of threads in the vulnerabilities tests.
+
+
+
+Uniscan v1.0 date: 18/06/2011
+
+- First version of Uniscan 

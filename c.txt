@@ -1,0 +1,3 @@
+<?php
+echo base64_decode("dW5pcGFtcGFzY2FudW5pcGFtcGE=");
+?>

