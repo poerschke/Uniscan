@@ -20,7 +20,8 @@
 #	 Douglas Poerschke Rocha since version 1.0
 
 
-use lib "./Uniscan";
+use FindBin qw($RealBin);
+use lib $RealBin;
 use Uniscan::Crawler;
 use Uniscan::Functions;
 use Uniscan::Scan;
@@ -58,7 +59,7 @@ if($args{u}){
 	$args{u} .= "/" if($args{u} !~/\/$/);
 	$func->check_url($args{u});
 	push(@urllist, $args{u});
-} 
+}
 elsif($args{f}){
 	open(my $url_list, "<", "$args{f}") or die "$!\n";
 	while(<$url_list>){
@@ -268,7 +269,7 @@ foreach my $url (@urllist){
 			$scan->runDynamic(@urls);
 			$func->writeHTMLCategoryEnd();
 		}
-	
+
 		if($args{s}){
 			$func->writeHTMLCategory($conf{'lang19'});
 			$func->write("="x99);
@@ -311,7 +312,7 @@ foreach my $url (@urllist){
 
 
 sub background{
-	
+
 	$SIG{"INT"} = "IGNORE";
 	$SIG{"HUP"} = "IGNORE";
 	$SIG{"TERM"} = "IGNORE";
