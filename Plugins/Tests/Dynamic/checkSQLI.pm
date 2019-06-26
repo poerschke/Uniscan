@@ -6,18 +6,17 @@ use Thread::Queue;
 use Uniscan::Http;
 use threads;
 
-	my $c = Uniscan::Configure->new(conffile => "uniscan.conf");
-	my $func = Uniscan::Functions->new();
-	my $http = Uniscan::Http->new();
+my $c = Uniscan::Configure->new(conffile => "uniscan.conf");
+my $func = Uniscan::Functions->new();
+my $http = Uniscan::Http->new();
+my $q = new Thread::Queue;
 
 sub new {
 	my $class    = shift;
-	my $self     = {name => "SQL-injection tests", version=>1.1};
+	my $self     = {name => "SQL-injection tests", version=>1.2};
 	our $enabled  = 1;
 	our %conf = ( );
 	%conf = $c->loadconf();
-	our $q : shared = "";
-	our $vulnerable :shared = 0;
 	return bless $self, $class;
 }
 
@@ -26,19 +25,19 @@ sub execute(){
 	my ($self,@urls) = @_;
 	our @SQL = (
 		"'",
-		";",
 		"\""
 	);
 	$func->write("|"." "x99);
 	$func->write("|"." "x99);
-	$func->write("| SQL-i:");
+	$func->write("| ". $conf{'lang132'} .":");
+	$func->writeHTMLItem($conf{'lang132'} .":<br>");
 	&ScanSQLCrawler(@urls);	
 	&ScanSQLCrawlerPost(@urls);
 }
 
 sub clean{
 	my $self = shift;
-	$vulnerable = 0;
+
 }
 
 
@@ -57,31 +56,41 @@ sub ScanSQLCrawlerPost(){
 }
 
 sub TestSQL(){
-	while($q->pending){
+	while($q->pending > 0){
 		my $test = $q->dequeue;
-		print "[*] Remaining tests: ". $q->pending ." Threads: " .(scalar(threads->list())+1) ."       \r";
-		my $resp = $http->GET($test);
-		if($resp =~/You have an error in your SQL syntax|Microsoft OLE DB Provider for ODBC Drivers|Supplied argument is not a valid .* result|Unclosed quotation mark after the character string/){
-			$vulnerable++;
-			$func->write("| [+] Vul[$vulnerable] [SQL-i] $test               ");
+		next if(not defined $test);
+		if($test !~/#/){
+			print "[*] ".$conf{'lang65'}.": ". $q->pending  ."       \r";
+			my $resp = $http->GET($test);
+			if($resp =~/You have an error in your SQL syntax|Microsoft OLE DB Provider for ODBC Drivers|Supplied argument is not a valid .* result|Unclosed quotation mark after the character string/i){
+				$func->write("| [+] Vul [SQL-i] $test               ");
+				$func->writeHTMLValue($test);
+				$func->writeHTMLVul("SQL-I");
+			}
+			$resp = 0;
 		}
-		$resp = 0;
 	}
+	$q->enqueue(undef);
 }
 
 
 sub TestSQLPost(){
-	while($q->pending){
+	while($q->pending > 0){
 		my $test = $q->dequeue;
-		my ($url, $data) = split('#', $test);
-		print "[*] Remaining tests: ". $q->pending ." Threads: " .(scalar(threads->list())+1) ."       \r";
-		my $resp = $http->POST($url, $data);
-		if($resp =~/You have an error in your SQL syntax|Microsoft OLE DB Provider for ODBC Drivers|Supplied argument is not a valid .* result|Unclosed quotation mark after the character string/){
-			$vulnerable++;
-			$func->write("| [+] Vul[$vulnerable] [SQL] $url               \n| Post data: $data               ");
+		next if(not defined $test);
+		if($test =~/#/){
+			my ($url, $data) = split('#', $test);
+			print "[*] ".$conf{'lang65'}.": ". $q->pending  ."       \r";
+			my $resp = $http->POST($url, $data);
+			if($resp =~/You have an error in your SQL syntax|Microsoft OLE DB Provider for ODBC Drivers|Supplied argument is not a valid .* result|Unclosed quotation mark after the character string/i){
+				$func->write("| [+] Vul [SQL-i] $url               \n| ".$conf{'lang129'}.": $data               ");
+				$func->writeHTMLValue($url."<br>".$conf{'lang129'}.": $data");
+				$func->writeHTMLVul("SQL-I");
+			}
+			$resp = 0;
 		}
-		$resp = 0;
 	}
+	$q->enqueue(undef);
 }
 
 
@@ -103,7 +112,11 @@ sub GenerateTestsSql(){
 						$temp = $line;
 						$str = urlencode($str) if($conf{'url_encode'} == 1);
 						my $t = $variables[$x] . $str;
-						$temp =~ s/\Q$variables[$x]\E/$t/g;
+						$temp =~ s/\Q$variables[$x]\E//g;
+						$t = "&" . $t if($t !~/^&/);
+						$temp .= $t;
+						$temp =~ s/&&/&/g;
+						$temp =~ s/\?&/\?/g;
 						push(@list2, $temp);
 					}
 				}
@@ -147,10 +160,6 @@ sub GenerateTestsPostSql(){
 
 
 
-
-
-
-
 sub status(){
  my $self = shift;
  return $enabled;
@@ -158,27 +167,24 @@ sub status(){
 
  sub threadnize(){
 	my ($fun, @tests) = @_;
-	$q = 0;
-	$q = new Thread::Queue;
-	$tests[0] = 0;
 	foreach my $test (@tests){
 		$q->enqueue($test) if($test);
 	}
 
 	my $x=0;
+	my @threads = ();
 	while($q->pending() && $x <= $conf{'max_threads'}-1){
 		no strict 'refs';
-		threads->new(\&{$fun});
+		push @threads, threads->new(\&{$fun});
 		$x++;
 	}
 
-	my @threads = threads->list();
-        foreach my $running (@threads) {
+	sleep(2);
+	foreach my $running (@threads) {
 		$running->join();
-		print "[*] Remaining tests: ". $q->pending ." Threads: " .(scalar(threads->list())+1) ."       \r";
-        }
+		print "[*] ". $conf{'lang65'}.": ". $q->pending  ."       \r";
+	}
 	@threads = ();
-	$q = 0;
 }
 
 
@@ -190,20 +196,6 @@ sub urlencode {
     $s =~ s/%25/%/g;
     return $s;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

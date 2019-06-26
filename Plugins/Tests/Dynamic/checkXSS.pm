@@ -9,16 +9,15 @@ use threads;
 	my $c = Uniscan::Configure->new(conffile => "uniscan.conf");
 	my $func = Uniscan::Functions->new();
 	my $http = Uniscan::Http->new();
-
+	my $q = new Thread::Queue;
+	my %xsss = ();
 
 sub new {
 	my $class    = shift;
-	my $self     = {name => "Cross-Site Scripting tests", version=>1.0};
+	my $self     = {name => "Cross-Site Scripting tests", version=>1.2};
 	our $enabled  = 1;
 	our %conf = ( );
 	%conf = $c->loadconf();
-	our $q : shared = "";
-	our $vulnerable :shared = 0;
 	return bless $self, $class;
 }
 
@@ -28,8 +27,6 @@ sub execute(){
 	our @XSS = (
 		"\"><script>alert('XSS')</script>",
 		"<script>alert('XSS')</script>",
-		"'';!--\"<XSS>=&{()}",
-		"\">'';!--\"<XSS>=&{()}",
 		"<IMG SRC=\"javascript:alert('XSS');\">",
 		"\"><IMG SRC=\"javascript:alert('XSS');\">",
 		"<IMG SRC=javascript:alert(&quot;XSS&quot;)>",
@@ -50,14 +47,16 @@ sub execute(){
 
 	$func->write("|"." "x99);
 	$func->write("|"." "x99);
-	$func->write("| XSS:");
+	$func->write("| ".$conf{'lang133'}.":");
+	$func->writeHTMLItem($conf{'lang133'} .":<br>");
 	&ScanXSSCrawler(@urls);	
 	&ScanXSSCrawlerPost(@urls);
 }
 
 sub clean{
 	my $self = shift;
-	$vulnerable = 0;
+	%xsss = ();
+
 }
 
 
@@ -78,32 +77,44 @@ sub ScanXSSCrawlerPost(){
 
 
 sub TestXSS(){
-	while($q->pending){
+	while($q->pending > 0){
 		my $test = $q->dequeue;
-		print "[*] Remaining tests: ". $q->pending ." Threads: " .(scalar(threads->list())+1) ."       \r";
+		next if(not defined $test);
+		next if($test =~/#/g);
+		print "[*] ".$conf{'lang65'}.": ". $q->pending ."       \r";
 		my $resp = $http->GET($test);
 		if($resp =~ m/<[\w|\s|\t|\n|\r|'|"|\?|\[|\]|\(|\)|\*|&|%|\$|#|@|!|\|\/|,|\.|;|:|\^|~|\}|\{|\+|\-|=|_]+>[_|=|\w|\s|\t|\n|\r|'|"|\?|\[|\]|\(|\)|\*|&|%|\$|#|@|!|\|\/|,|\.|;|:|\^|~|\}|\{|\+|\-]*(<script>alert\('XSS'\)<\/script>|<XSS>|<IMG SRC=\"javascript:alert\('XSS'\);\">|<IMG SRC=javascript:alert\(&quot;XSS&quot;\)>|<IMG SRC=javascript:alert\(String.fromCharCode\(88,83,83\)\)>|<IMG SRC=javascript:alert('XSS')>|<IMG SRC=\"javascript:alert\('XSS'\)\">|<LINK REL=\"stylesheet\" HREF=\"javascript:alert\('XSS'\);\">|<IMG SRC='vbscript:msgbox\(\"XSS\"\)'>|<META HTTP-EQUIV=\"refresh\" CONTENT=\"0; URL=http:\/\/;URL=javascript:alert\('XSS'\);\">|<DIV STYLE=\"background-image: url\(javascript:alert\('XSS'\)\)\">|<body onload=\"javascript:alert\('XSS'\)\"><\/body>|<table background=\"javascript:alert\('XSS'\)\"><\/table>).*</i){
-			$vulnerable++;
-			$func->write("| [+] Vul[$vulnerable] [XSS] $test               ");
+			$func->write("| [+] Vul [XSS] $test               ");
+			$test =~s/</&lt;/g;
+			$test =~s/>/&gt;/g;
+			$func->writeHTMLValue($test);
+			$func->writeHTMLVul("XSS");
 		}
 		$resp = 0;
 	}
+	$q->enqueue(undef);
 }
 
 
 
 sub TestXSSPost(){
-	while($q->pending){
+	while($q->pending > 0){
 		my $test = $q->dequeue;
+		next if(not defined $test);
+		next if($test !~/#/g);
 		my ($url, $data) = split('#', $test);
-		print "[*] Remaining tests: ". $q->pending ." Threads: " .(scalar(threads->list())+1) ."       \r";
+		print "[*] ".$conf{'lang65'}.": ". $q->pending  ."       \r";
 		my $resp = $http->POST($url, $data);
 		if($resp =~ m/<[\w|\s|\t|\n|\r|'|"|\?|\[|\]|\(|\)|\*|&|%|\$|#|@|!|\|\/|,|\.|;|:|\^|~|\}|\{|\+|\-|=|_]+>[_|=|\w|\s|\t|\n|\r|'|"|\?|\[|\]|\(|\)|\*|&|%|\$|#|@|!|\|\/|,|\.|;|:|\^|~|\}|\{|\+|\-]*(<script>alert\('XSS'\)<\/script>|<XSS>|<IMG SRC=\"javascript:alert\('XSS'\);\">|<IMG SRC=javascript:alert\(&quot;XSS&quot;\)>|<IMG SRC=javascript:alert\(String.fromCharCode\(88,83,83\)\)>|<IMG SRC=javascript:alert('XSS')>|<IMG SRC=\"javascript:alert\('XSS'\)\">|<LINK REL=\"stylesheet\" HREF=\"javascript:alert\('XSS'\);\">|<IMG SRC='vbscript:msgbox\(\"XSS\"\)'>|<META HTTP-EQUIV=\"refresh\" CONTENT=\"0; URL=http:\/\/;URL=javascript:alert\('XSS'\);\">|<DIV STYLE=\"background-image: url\(javascript:alert\('XSS'\)\)\">|<body onload=\"javascript:alert\('XSS'\)\"><\/body>|<table background=\"javascript:alert\('XSS'\)\"><\/table>).*</i){
-			$vulnerable++;
-			$func->write("| [+] Vul[$vulnerable] [XSS] $url               \n| Post data: $data               ");
+			$func->write("| [+] Vul [XSS] $url               \n| ".$conf{'lang129'}.": $data               ");
+			$data =~s/</&lt;/g;
+			$data =~s/>/&gt;/g;
+			$func->writeHTMLValue($url."<br>".$conf{'lang129'}.": $data");
+			$func->writeHTMLVul("XSS");
 		}
 		$resp = 0;
 	}
+	$q->enqueue(undef);
 }
 
 
@@ -126,11 +137,23 @@ sub GenerateTests(){
 						$str = urlencode($str) if($conf{'url_encode'} == 1);
 						my $t = $var_temp . $str;
 						$temp =~ s/\Q$variables[$x]\E/$t/g;
-						push(@list2, $temp);
+						if(!$xsss{$temp}) {
+							push(@list2, $temp);
+							$xsss{$temp} = 1;
+						}
 					}
 				}
 			}
 		@variables = ();
+		}
+		if($line =~/\?/){
+			my $l = substr($line, 0, index($line, '?')+1);
+			foreach my $f (@XSS){
+				if(!$xsss{$l.$f}){
+					push(@list2, $l.$f);
+					$xsss{$l.$f} = 1;
+				}
+			}
 		}
 	}
 	@list = ();
@@ -158,7 +181,10 @@ sub GenerateTestsPost(){
   						$str = urlencode($str) if($conf{'url_encode'} == 1);
   						my $t = $var_temp . $str;
   						$temp =~ s/\Q$variables[$x]\E/$t/g;
-  						push(@list2, $url . '#' .$temp);
+						if(!$xsss{$url . '#' .$temp}){
+							push(@list2, $url . '#' .$temp);
+							$xsss{$url . '#' .$temp} = 1;
+						}
   					}
   				}
   			}
@@ -171,27 +197,24 @@ sub GenerateTestsPost(){
 
  sub threadnize(){
 	my ($fun, @tests) = @_;
-	$q = 0;
-	$q = new Thread::Queue;
-	$tests[0] = 0;
 	foreach my $test (@tests){
 		$q->enqueue($test) if($test);
 	}
 
 	my $x=0;
+	my @threads = ();
 	while($q->pending() && $x <= $conf{'max_threads'}-1){
 		no strict 'refs';
-		threads->new(\&{$fun});
+		push @threads, threads->new(\&{$fun});
 		$x++;
 	}
 
-	my @threads = threads->list();
-        foreach my $running (@threads) {
+	sleep(2);
+	foreach my $running (@threads) {
 		$running->join();
-		print "[*] Remaining tests: ". $q->pending ." Threads: " .(scalar(threads->list())+1) ."       \r";
-        }
+		print "[*] ".$conf{'lang65'}.": ". $q->pending  ."       \r";
+	}
 	@threads = ();
-	$q = 0;
 }
 
 
