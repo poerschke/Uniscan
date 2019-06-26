@@ -1,0 +1,36 @@
+/wp-content/plugins/akismet/readme.txt;contains wordpress version info
+/readme.html;may contain wordpress version info
+/CHANGELOG.txt;may contain drupal version info
+/profiles/standard/standard.info;contains drupal version info
+/profiles/testing/testing.info;contains drupal version info
+/profiles/minimal/minimal.info;contains drupal version info
+/joomla.xml;contains joomla version info
+/adm/style/admin.css;contains phpBB version info
+/docs/CHANGELOG.html;contains phpBB version info
+/styles/prosilver/style.cfg;contains phpBB version info
+/concrete/config/banned_words.txt;concrete default file found. funny as hell!
+/config/banned_words.txt;concrete default file found. funny as hell!
+/INSTALL;MAYBE mediawiki version info
+/HISTORY;MAYBE mediawiki version info
+/docs/export-demo.xml;mediawiki version info
+/docs/maintenance.txt;mediawiki version info
+/images/README;mediawiki version info
+/docs/changelog.txt;wolfcms version info
+/docs/updating.txt;wolfcms version info
+/wolf/install/config.tmpl;maybe wolfcms version info
+/CHANGELOG.md;forkcms version info
+/VERSION.md;forkcms version info. no sirusly they put it in there. nothing else. just the verion... face palm
+/backend/core/info.xml;forkcms version info
+/docs/html/admin/index.html;phorum version info
+/docs/html/admin/ch01.html;phorum version info
+/docs/html/admin/ch01s04.html;phorum version info
+/docs/html/admin/ch03s07.html;phorum version info
+/docs/html/developer/ch03s15.html;phorum version info
+/docs/html/developer/ch02.html;phorum version info
+/nucleus/documentation/history.html;nucleus cms version info
+/query.log;pligg cms. HHHmmmmmmmmm
+/README.txt;MAYBE django-lfc verions info
+/django_lfc.egg-info/vPKG-INFO;django-lfc verions info
+/lfc/fixtures/superuser.xml;django-lfc this looks REALLY interesting
+/version.txt;MAYBE jojo cms version info
+/ChangeLog;MAYBE nanoblogger version info

@@ -1,3 +1,79 @@
+Uniscan v6.3 date 22/07/2015
+
+- Remove checkUpdate function from uniscan.pl
+
+
+Uniscan v6.2 date 18/08/2012
+
+- Improve HTTPS (SSL) requests.
+- Bugfix on crawler.
+- Bugfix on checkupdate() function to accept versions 6.2.001 .002 and etc.
+- uniscan_gui.pl rewritten.
+- Bugfix on Blind SQL Injection plug-in (less false-positive).
+- Bugfix on plug-in 9_directoryAdd.pm.
+- Add Multi-language support.
+- Added new feature: feeding the crawler with parsing the file sitemap.xml.
+- Added new feature: added index.php in report directory to show saved reports.
+
+
+Uniscan v6.1 date 27/07/2012
+
+- Added -w 4 on ping command of Server information module.
+- Small bugfix on crawler.
+- Bugfix on SQL injection plugin.
+- Bugfix on Blind SQL injection plugin.
+- Added a new test on Blind SQL injecion plugin.
+- Added option to show crawling ignored files.
+- Removed fews extensions of "find Backup files" plugin.
+- Added option to write all requests done by uniscan on requests.txt.
+- Improved FCKeditor plugin.
+- Improved checkBackup plugin.
+- Added new plugin for crawler: timthumb vulnerability.
+- Added new plugin for dynamic tests: timthumb vulnerability.
+- Removed a bug that crashed the threads.
+
+
+Uniscan v6.0 date 18/05/2012
+
+- Crawler improved (a lot bug fix).
+- Google seach back to Uniscan.
+- Added Web server information module.
+- Added Server information module.
+- Added simple Web client (index.php).
+- Added New Plugin "FCKeditor" for crawler.
+- Added New Plugin "FCKeditor" for dynamic tests.
+- Added New Plugin "PHP CGI Argument Injection" for dynamic tests.
+- Added Auto-update.
+- Added simple HTML report.
+- Added detection of redirection.
+- Added Simple TK GUI.
+- Improved plug-in Webshell finder (less false-positive)
+- Improved uniscan.pl, now uniscan.pl try detect if a host is responding before doing the scanning.
+- Find for Drupal, Joomla and Wordpress plugins when banner-grabbing detect on of this CMS.
+
+This release has a great help from Roberto Neves.
+
+
+Uniscan v5.4 date 02/04/2012
+
+- Crawler improved.
+- 4 plug-ins updated.
+
+
+Uniscan v5.3 date 01/02/2012
+
+- Bug fix on Functions.pm reported by Bl4ck5w4n :-)
+- Removed Google search
+- Added 4 new plug-ins
+- Added a script to download configuration files by LFI.
+
+
+Uniscan v5.2 date 11/11/2011
+
+- added new regex in crawler
+- Bug fix in plig-in SQL-injection
+
+
 uniscan v5.1 date 01/11/2011
 
 - Added Google search

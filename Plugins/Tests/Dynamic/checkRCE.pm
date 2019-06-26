@@ -9,16 +9,14 @@ use threads;
 	my $c = Uniscan::Configure->new(conffile => "uniscan.conf");
 	my $func = Uniscan::Functions->new();
 	my $http = Uniscan::Http->new();
-
+	my $q = new Thread::Queue;
 
 sub new {
 	my $class    = shift;
-	my $self     = {name => "Remote Command Execution tests", version => 1.0};
+	my $self     = {name => "Remote Command Execution tests", version => 1.1};
 	our $enabled  = 1;
 	our %conf = ( );
 	%conf = $c->loadconf();
-	our $q : shared = "";
-	our $vulnerable :shared = 0;
 	return bless $self, $class;
 }
 
@@ -62,7 +60,8 @@ sub execute(){
 
 	$func->write("|"." "x99);
 	$func->write("|"." "x99);
-	$func->write("| RCE:");
+	$func->write("| ". $conf{'lang131'} .":");
+	$func->writeHTMLItem($conf{'lang131'} .":<br>");
 	&ScanRCECrawler(@urls);	
 	&ScanRCECrawlerPost(@urls);
 }
@@ -70,7 +69,6 @@ sub execute(){
 
 sub clean{
 	my $self = shift;
-	$vulnerable = 0;
 }
 
 
@@ -89,31 +87,39 @@ sub ScanRCECrawlerPost(){
 }
 
 sub TestRCE(){
-	while($q->pending){
+	while($q->pending > 0){
 		my $test = $q->dequeue;
-		print "[*] Remaining tests: ". $q->pending ." Threads: " .(scalar(threads->list())+1) ."       \r";
+		next if(not defined $test);
+		next if($test =~/#/g);
+		print "[*] ".$conf{'lang65'}.": ". $q->pending ."       \r";
 		my $resp = $http->GET($test);
 		if($resp =~/root:x:0:0:root/ || ($resp =~/boot loader/ && $resp =~/operating systems/ && $resp =~/WINDOWS/)){
-			$vulnerable++;
-			$func->write("| [+] Vul[$vulnerable] [RCE] $test               ");
+			$func->write("| [+] Vul [RCE] $test               ");
+			$func->writeHTMLValue($test);
+			$func->writeHTMLVul("RCE");
 		}
 		$resp = 0;
 	}
+	$q->enqueue(undef);
 }
 
 
 sub TestRCEPost(){
-	while($q->pending){
+	while($q->pending > 0){
 		my $test = $q->dequeue;
+		next if(not defined $test);
+		next if($test !~/#/g);
 		my ($url, $data) = split('#', $test);
-		print "[*] Remaining tests: ". $q->pending ." Threads: " .(scalar(threads->list())+1) ."       \r";
+		print "[*] ". $conf{'lang65'}.": ". $q->pending  ."       \r";
 		my $resp = $http->POST($url, $data);
 		if($resp =~/root:x:0:0:root/ || ($resp =~/boot loader/ && $resp =~/operating systems/ && $resp =~/WINDOWS/)){
-			$vulnerable++;
-			$func->write("| [+] Vul[$vulnerable] [RCE] $url               \n| Post data: $data               ");
+			$func->write("| [+] Vul [RCE] $url               \n| ". $conf{'lang129'} .": $data               ");
+			$func->writeHTMLValue($url."<br>". $conf{'lang129'} .": $data");
+			$func->writeHTMLVul("RCE");
 		}
 		$resp = 0;
 	}
+	$q->enqueue(undef);
 }
 
 sub GenerateTests(){
@@ -190,27 +196,24 @@ sub GenerateTestsPost(){
 
 sub threadnize(){
 	my ($fun, @tests) = @_;
-	$q = 0;
-	$q = new Thread::Queue;
-	$tests[0] = 0;
 	foreach my $test (@tests){
 		$q->enqueue($test) if($test);
 	}
 
 	my $x=0;
+	my @threads = ();
 	while($q->pending() && $x <= $conf{'max_threads'}-1){
 		no strict 'refs';
-		threads->new(\&{$fun});
+		push @threads, threads->new(\&{$fun});
 		$x++;
 	}
 
-	my @threads = threads->list();
-        foreach my $running (@threads) {
+	sleep(2);
+	foreach my $running (@threads) {
 		$running->join();
-		print "[*] Remaining tests: ". $q->pending ." Threads: " .(scalar(threads->list())+1) ."       \r";
-        }
+		print "[*] ".$conf{'lang65'}.": ". $q->pending  ."       \r";
+	}
 	@threads = ();
-	$q = 0;
 }
 
 
