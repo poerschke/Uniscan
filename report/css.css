@@ -1,0 +1,132 @@
+@charset "utf-8";
+/* CSS Document */
+
+table {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 9px;
+	font-weight: normal;
+	color: #000;
+	text-decoration: none;
+	border: thin dashed #000;
+	text-align:left;
+}
+
+
+
+td {
+	text-align: center;
+}
+.centro {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 9px;
+	font-style: normal;
+	font-weight: bold;
+	text-align:center;
+	text-transform: none;
+	color: #FFF;
+	background-color: #000;
+}
+
+a {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 9px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #666;
+	text-decoration: none;
+	background-color: #FFF;
+}
+
+a:hover {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 9px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #F00;
+	text-decoration: underline;
+	background-color: #FFF;
+}
+
+body {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 9px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: normal;
+	color: #000;
+	background-color: #FFF;
+}
+
+input {
+	border: thin solid #000;
+}
+
+fieldset {
+	border:thin solid #000;	
+}
+
+
+
+select {
+	border: thin solid #000;
+}
+
+
+#valor {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #666;
+	text-decoration: none;
+	background-color: #FFF;
+}
+#aff {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+}
+
+#div0 {
+	position:absolute;
+	left:100px;
+	top:50px;
+	z-index:1;
+}
+
+
+#div1 {
+	position:absolute;
+	left:7px;
+	top:125px;
+	width:200px;
+	height:150px;
+	z-index:1;
+}
+
+#div2 {
+	position:absolute;
+	left:264px;
+	top:124px;
+	width:400px;
+	z-index:2;
+}
+
+#div3 {
+	position:absolute;
+	left:400px;
+	top:100px;
+	width:300px;
+	z-index:3;
+}
+
+.nada {
+}
