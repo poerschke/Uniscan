@@ -1,15 +1,21 @@
 package Plugins::Crawler::emailColect;
 
 use Uniscan::Functions;
-
-	my $func = Uniscan::Functions->new();
+use Thread::Semaphore;
+use Uniscan::Configure;
+	
+my %conf = ( );
+my $cfg = Uniscan::Configure->new(conffile => "uniscan.conf");
+%conf = $cfg->loadconf();
+my $semaphore = Thread::Semaphore->new();
+my $func = Uniscan::Functions->new();
+our %email : shared = ();
 
 sub new {
-    my $class    = shift;
-    my $self     = {name => "E-mail Detection", version => 1.0};
-	our %email : shared = ();
+	my $class    = shift;
+	my $self     = {name => "E-mail Detection", version => 1.1};
 	our $enabled = 1;
-    return bless $self, $class;
+	return bless $self, $class;
 }
 
 sub execute {
@@ -17,8 +23,11 @@ sub execute {
 	my $url = shift;
 	my $content = shift;
 
-	while($content =~m/([\w\-\_\.]+\@[\w\d\-]+\.\w+[\.[a-z]+]*)/g){
+	while($content =~m/([a-z\-\_\.\d]+\@[a-z\d\-\.]+\.[a-z{2,4}]+)/g){
+		
+		$semaphore->down();
 		$email{$1}++;
+		$semaphore->up();
 	}
 }
 
@@ -26,8 +35,10 @@ sub execute {
 sub showResults(){
 	my $self = shift;
 	$func->write("|\n| E-mails:");
-	foreach my $mail (%email){
-		$func->write("| [+] E-mail Found: ". $mail . " " . $email{$mail} . "x times") if($email{$mail});
+	$func->writeHTMLItem("E-mails:<br>");
+	foreach my $mail (keys %email){
+		$func->write("| [+] ". $conf{'lang103'} .": ". $mail) if($email{$mail});
+		$func->writeHTMLValue($conf{'lang103'}  .": ". $mail) if($email{$mail});
 	}
 }
 

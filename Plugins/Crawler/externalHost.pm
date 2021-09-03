@@ -1,13 +1,20 @@
 package Plugins::Crawler::externalHost;
 
 use Uniscan::Functions;
-
-	my $func = Uniscan::Functions->new();
+use URI;
+use  Thread::Semaphore;
+use Uniscan::Configure;
+	
+my %conf = ( );
+my $cfg = Uniscan::Configure->new(conffile => "uniscan.conf");
+%conf = $cfg->loadconf();
+my $func = Uniscan::Functions->new();
+our %external : shared = ();
+my $semaphore = Thread::Semaphore->new();
 
 sub new {
     my $class    = shift;
-    my $self     = {name => "External Host Detect", version => 1.1};
-	our %external : shared = ();
+    my $self     = {name => "External Host Detect", version => 1.2};
 	our $enabled = 1;
     return bless $self, $class;
 }
@@ -16,6 +23,7 @@ sub execute {
     my $self = shift;
 	my $url = shift;
 	my $content = shift;
+    my $url_uri = &host($url);
 	$url = $func->get_url($url);
 	my @ERs = (	"href=\"(.+)\"", 
 				"href='(.+)'", 
@@ -33,7 +41,11 @@ sub execute {
 			next if($link =~/[\s"']/);
 			$link = &get_url($link);
 			if($url ne $link){
-				$external{$link}++ if($link);
+                if($link !~ /$url_uri/){
+					$semaphore->down();
+					$external{$link}++ if($link);
+					$semaphore->up();
+ 			    }
 			}
 		}
 	}
@@ -44,9 +56,11 @@ sub execute {
 
 sub showResults(){
 	my $self = shift;
-	$func->write("|\n| External hosts:");
-	foreach my $url (%external){
-		$func->write("| [+] External Host Found: ". $url . " " . $external{$url} . "x times") if($external{$url});
+	$func->write("|\n| ". $conf{'lang104'} .":");
+	$func->writeHTMLItem($conf{'lang104'} .":<br>");
+	foreach my $url (keys %external){
+		$func->write("| [+] ". $conf{'lang105'} .": ". $url) if($external{$url});
+		$func->writeHTMLValue($url) if($external{$url});
 	}
 }
 
@@ -77,6 +91,21 @@ sub get_url(){
 		$url =  substr($url, 0, index($url, '/')) if($url =~/\//);
 		return "https://" . $url;
 	}
+}
+
+
+##############################################
+#  Function host
+#  this function return the domain of a url
+#
+#  Param: a $url
+#  Return: $domain of url
+##############################################
+
+sub host(){
+  	my $h = shift;
+  	my $url1 = URI->new( $h || return -1 );
+  	return $url1->host();
 }
 
 
