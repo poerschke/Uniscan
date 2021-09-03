@@ -3,6 +3,11 @@ package Uniscan::Stress;
 use Moose;
 use Uniscan::Factory;
 use Uniscan::Functions;
+use Uniscan::Configure;
+	
+my %conf = ( );
+my $cfg = Uniscan::Configure->new(conffile => "uniscan.conf");
+%conf = $cfg->loadconf();
 
 our @plugins = ();
 
@@ -18,17 +23,17 @@ sub loadPlugins(){
 	foreach my $d (@plug){
 		$d =~ s/\.pm//g;
 		push(@plugins, Uniscan::Factory->create($d, "Stress"));
-		$func->write("| Plugin name: $plugins[$x]->{name} v.$plugins[$x]->{version} Loaded.") if($plugins[$x]->status() == 1);
+		$func->write("| ". $conf{'lang33'} .": $plugins[$x]->{name} v.$plugins[$x]->{version} ". $conf{'lang34'} .".") if($plugins[$x]->status() == 1);
 		$x++;
 	}
 }
 
 	
 sub run(){
-	my ($self, $url) = @_;
+	my ($self, @url) = @_;
 	# plugins start
 	foreach my $p (@plugins){
-		$p->execute($url) if($p->status() == 1);
+		$p->execute(@url) if($p->status() == 1);
 	}
 	# plugins end
 }

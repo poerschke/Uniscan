@@ -3,6 +3,11 @@ package Uniscan::Google;
 use Moose;
 use Uniscan::Functions;
 use Uniscan::Http;
+use Uniscan::Configure;
+	
+my %conf = ( );
+my $cfg = Uniscan::Configure->new(conffile => "uniscan.conf");
+%conf = $cfg->loadconf();
 
 
 sub search(){
@@ -14,14 +19,16 @@ sub search(){
 	my $n = 0;
 	my $google = "";
 	my %sites = ();
-	$func->write("| [+] Google search for: $search");
-	for($n=0; $n<700; $n+=10){
-		$google = 'http://www.google.com/search?q='. $search .'&num=100&hl=pt-BR&safe=off&ie=UTF-8&start='. $n .'&sa=N';
+	$func->write("| [+] ". $conf{'lang97'} .": $search");
+	$func->writeHTMLValue($conf{'lang97'} .": $search");
+	for($n=0; $n<200; $n+=10){
+		$google = 'http://www.google.com.ar/search?hl=es&q='. $search .'&start='. $n .'&sa=N';
 		my $response = $http->GET($google);
-		while ($response =~  m/<a href=\"https?:\/\/([^>\"]+)\" class=l>/g){
+		while ($response =~  m/<h3 class\=\"r\"><a href\=\"https?:\/\/([^>\"]+)\" class\=/g){
 			if ($1 !~ m/google|cache|translate/){
 				my $site = $1;
 				$site = substr($site, 0, index($site, '/')) if($site =~/\//);
+				$site = "http://" . $site . "/";
 				if(!$sites{$site}){
 					$sites{$site} = 1;
 				}
@@ -29,15 +36,20 @@ sub search(){
 		}
 	}
 
+
+
 	my $i =0;
-	open(my $file, ">>sites.txt");
+	open(my $file, ">>", "sites.txt");
 	foreach my $key (keys %sites){
-		print $file "http://" . $key . "/\n";
+		#print $file "http://" . $key . "/\n";
+                print $file $key. "\n";
 		$i++;
 	}
 	close($file);
-	$func->write("| [+] Google returns $i sites.");
-	$func->write("| [+] Google search finished.");
+	$func->write("| [+] Google ". $conf{'lang25'} ." $i sites.");
+	$func->writeHTMLValue("Google ". $conf{'lang25'} ." $i sites.");
+	$func->write("| [+] ". $conf{'lang98'} .".");
+	$func->writeHTMLValue($conf{'lang98'} .".");
 
 }
 
